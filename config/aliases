@@ -1,7 +1,8 @@
-e.=explorer .
-gl=git log --oneline --all --graph --decorate  $*
-ls=ls --color $*
-pwd=cd
+expl=explorer .
+ls=ls -Fh --color $*
 clear=cls
 history=cat %CMDER_ROOT%\config\.history
+subl="%PROGRAMFILES%\Sublime Text 3\subl.exe" $*
+now=time /t $T date /t
+
 unalias=alias /d $1

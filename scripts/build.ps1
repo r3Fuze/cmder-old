@@ -41,7 +41,10 @@ Param(
     [string]$saveTo = "..\vendor\",
 
     # Launcher folder location
-    [string]$launcher = "..\launcher"
+    [string]$launcher = "..\launcher",
+
+    # MSBuild.exe location. Acquired using system functions
+    [string]$msBuild = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory() + "MSBuild.exe"
 )
 
 . "$PSScriptRoot\utils.ps1"
@@ -73,7 +76,8 @@ foreach ($s in $sources) {
 Pop-Location
 
 Push-Location -Path $launcher
-msbuild CmderLauncher.vcxproj /p:configuration=Release
+# Using '&' to execute MSBuild.exe
+&$msBuild CmderLauncher.vcxproj /p:configuration=Release
 Pop-Location
 
 Write-Verbose "All good and done!"
