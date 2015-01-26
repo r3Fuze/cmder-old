@@ -1,8 +1,32 @@
+;= Any lines prefixed with ;= will be ignored. REM and :: comments will create errors.
+
+;= TODO: Create more aliases
+;=		 Provide examples for aliases
+;=		 Figure out how to make optional arguments
+
+;= Opens current folder in exporer
 expl=explorer .
+
+;= Enhanced 'ls' command
 ls=ls -Fh --color $*
+
+;= Clears the screen
 clear=cls
+
+;= Prints out your entire history file
 history=cat %CMDER_ROOT%\config\.history
+
+;= Opens file in Sublime Text
+;= Example:
+;=     subl [file/directory]
+;=     Opens [file/directory] in Sublime Text
 subl="%PROGRAMFILES%\Sublime Text 3\subl.exe" $*
+
+;= Prints out the current date and time
 now=time /t $T date /t
 
+;= Remove alias
+;= Example:
+;=     unalias [command]
+;=     Removes [command] from aliases
 unalias=alias /d $1
