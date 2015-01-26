@@ -1,8 +1,14 @@
+-- Edit package.path to make 'require' load from 'config' folder
+package.path = package.path .. string.format(";%s\\config\\?.lua", clink.get_env("CMDER_ROOT"))
+
+ansi = require("ansi")
+git = {}
+
 ---
  -- Find out current branch
  -- @return {false|git branch name}
 ---
-function get_git_branch()
+function git.get_branch()
     for line in io.popen("git branch 2>nul"):lines() do
         local m = line:match("%* (.+)$")
         if m then
@@ -17,34 +23,32 @@ end
  -- Get the status of working dir
  -- @return {bool}
 ---
-function get_git_status()
+function git.get_status()
     return os.execute("git diff --quiet --ignore-submodules HEAD")
 end
 
-function git_prompt_filter()
+function git.prompt_filter()
 
     -- Colors for git status
     local colors = {
-        clean = "\x1b[1;37;40m",
-        dirty = "\x1b[31;1m",
+        clean = ansi.white,
+        dirty = ansi.red .. ansi.bright
     }
 
-    local branch = get_git_branch()
+    local branch = git.get_branch()
     if branch then
         -- Has branch => therefore it is a git folder, now figure out status
-        if get_git_status() then
+        if git.get_status() then
             color = colors.clean
         else
             color = colors.dirty
         end
 
-        clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.."("..branch..")")
-        return true
+        return color .. "(" .. branch .. ")"
     end
 
     -- No git present or not in git file
-    clink.prompt.value = string.gsub(clink.prompt.value, "{git}", "")
-    return false
+    return ""
 end
 
-clink.prompt.register_filter(git_prompt_filter, 50)
+return git
