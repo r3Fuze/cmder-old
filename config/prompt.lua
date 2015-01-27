@@ -10,7 +10,7 @@ git = require("git")
 local ICON = "λ" -- ~ λ _ $ #
 local ICON_COLOR = ansi.red .. ansi.bright
 local DIR_COLOR = ansi.green .. ansi.bright
-local ALT_SLASH = false
+local SWAP_SLASH = true
 local SQUIGGLY_HOME = true
 
 function prompt_filter()
@@ -21,10 +21,15 @@ function prompt_filter()
 	prompt = string.sub(prompt, 1, string.len(prompt) - 1)
 
 	-- Replace '\' with '/' if configured
-	if ALT_SLASH then prompt = string.gsub(prompt, "\\", "/") end
+	if SWAP_SLASH then
+		prompt = string.gsub(prompt, "\\", "/")
+	end
 
 	-- Replace C:\Users\Username directory with ~\Username similar to unix.
-	if SQUIGGLY_HOME then prompt = string.gsub(prompt, clink.get_env("HOMEDRIVE") .. "\\Users", "~") end
+	if SQUIGGLY_HOME then
+		slash = (SWAP_SLASH and "/") or "\\"
+		prompt = string.gsub(prompt, clink.get_env("HOMEDRIVE") .. slash .. "Users", "~")
+	end
 
 	-- We set the prompt here instead of in 'init.bat'
 	prompt =
