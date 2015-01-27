@@ -17,6 +17,10 @@
 
     Execute the build and see what's going on.
 .EXAMPLE
+    .\build -BuildOnly
+
+    Skip all downloads and only build launcher
+.EXAMPLE
     .\build.ps1 -SourcesPath '~/custom/vendors.json'
 
     Build cmder with your own packages. See vendor/sources.json for the syntax you need to copy.
@@ -34,6 +38,9 @@ Param(
     # -verbose switch to turn on logging and
     # -whatif switch to not actually make changes
 
+    # Using this option will skip all downloads and only build launcher
+    [switch]$buildOnly = $False,
+
     # Path to the vendor configuration source file
     [string]$sourcesPath = "..\vendor\sources.json",
 
@@ -50,34 +57,37 @@ Param(
 . "$PSScriptRoot\utils.ps1"
 $ErrorActionPreference = "Stop"
 
-Push-Location -Path $saveTo
-$sources = Get-Content $sourcesPath | Out-String | Convertfrom-Json
+if (-not $buildOnly) {
+    Push-Location -Path $saveTo
+    $sources = Get-Content $sourcesPath | Out-String | Convertfrom-Json
 
-# Check for requirements
-Ensure-Exists $sourcesPath
-Ensure-Executable "7z"
+    # Check for requirements
+    Ensure-Exists $sourcesPath
+    Ensure-Executable "7z"
 
-foreach ($s in $sources) {
-    Write-Verbose "Getting $($s.name) from URL $($s.url)"
+    foreach ($s in $sources) {
+        Write-Verbose "Getting $($s.name) from URL $($s.url)"
 
-    # We do not care about the extensions/type of archive
-    $tempArchive = "$($s.name).tmp"
-    Delete-Existing $tempArchive
-    Delete-Existing $s.name
+        # We do not care about the extensions/type of archive
+        $tempArchive = "$($s.name).tmp"
+        Delete-Existing $tempArchive
+        Delete-Existing $s.name
 
-    Invoke-WebRequest -Uri $s.url -OutFile $tempArchive -ErrorAction Stop
-    Extract-Archive $tempArchive $s.name
+        Invoke-WebRequest -Uri $s.url -OutFile $tempArchive -ErrorAction Stop
+        Extract-Archive $tempArchive $s.name
 
-    if ((Get-Childitem $s.name).Count -eq 1) {
-        Flatten-Directory($s.name)
+        if ((Get-Childitem $s.name).Count -eq 1) {
+            Flatten-Directory($s.name)
+        }
     }
-}
 
-Pop-Location
+    Pop-Location
+}
 
 Push-Location -Path $launcher
 # Using '&' to execute MSBuild.exe
 &$msBuild CmderLauncher.vcxproj /p:configuration=Release
 Pop-Location
 
+Write-Verbose "$buildOnly"
 Write-Verbose "All good and done!"
