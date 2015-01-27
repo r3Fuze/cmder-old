@@ -25,6 +25,9 @@ subl="%PROGRAMFILES%\Sublime Text 3\subl.exe" $*
 ;= Prints out the current date and time
 now=time /t $T date /t
 
+;= Alias hub to git. 
+git=hub $*
+
 ;= Remove alias
 ;= Example:
 ;=     unalias [command]
