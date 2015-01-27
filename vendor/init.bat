@@ -34,16 +34,20 @@
 :: Should we check if the file exists? @if exist %include_path%
 @set include_path=%CMDER_ROOT%\bin\include
 
-:: Using 'for /f' to assign output of a command to a variable.
+:: Using 'for /f' to assign output of a command to a variable
 :: 'type' command is used to output contents of 'include file'
-:: 'tr' command is used to replace newlines with semi colons.
-:: Included git commands are not loaded at this points so we are using %git_install_root% just in case the user doesn't have git installed.
+:: 'tr' command is used to replace newlines with semi colons
+:: Included git commands are not loaded at this points so we are using %git_install_root% just in case the user doesn't have git installed
 @for /f "delims=" %%i in ('type %include_path% ^| %git_install_root%\bin\tr "\\n" ";"') do @set include_content=%%i
 
-:: Using 'call' to expand environment variables inside string.
+:: Using 'call' to expand environment variables inside string. Thanks, jeb! http://stackoverflow.com/a/28115851/1169576
 @call set include_content=%include_content%
 
-@set PATH=%CMDER_ROOT%\bin;%git_install_root%\bin;%git_install_root%\cmd;%git_install_root%\share\vim\vim74;%include_content%;%CMDER_ROOT%;%PATH%
+:: Add the bin folder and everything inside the include file to PATH
+@set PATH=%CMDER_ROOT%\bin;%include_content%;%CMDER_ROOT%;%PATH%
+
+:: Add all the git stuff to PATH. This includes the hub utility
+@set PATH=%git_install_root%\bin;%git_install_root%\cmd;%git_install_root%\share\vim\vim74;%CMDER_ROOT%\vendor\hub;%PATH%
 
 :: Add aliases
 @doskey /macrofile="%CMDER_ROOT%\config\aliases"
