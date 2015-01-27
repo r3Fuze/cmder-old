@@ -1,5 +1,7 @@
 # Cmder
 
+test
+
 This is my personal fork of [Cmder](https://github.com/bliker/cmder).
 Most of the stuff below is inaccurate due to my changes.
 
