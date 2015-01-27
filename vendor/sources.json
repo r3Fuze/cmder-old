@@ -1,5 +1,5 @@
 [
-    {
+	{
         "name": "msysgit",
         "version": "1.9.5-preview",
         "url": "https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/PortableGit-1.9.5-preview20141217.7z"
@@ -13,5 +13,10 @@
         "name": "conemu-maximus5",
         "version": "141221",
         "url": "https://conemu.codeplex.com/downloads/get/1382937"
+    },
+    {
+    	"name": "hub",
+    	"version": "2.2.0-rc1",
+    	"url": "https://github.com/github/hub/releases/download/v2.2.0-rc1/hub_2.2.0-rc1_windows_amd64.gz.tar"
     }
 ]
