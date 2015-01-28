@@ -89,5 +89,4 @@ Push-Location -Path $launcher
 &$msBuild CmderLauncher.vcxproj /p:configuration=Release
 Pop-Location
 
-Write-Verbose "$buildOnly"
 Write-Verbose "All good and done!"

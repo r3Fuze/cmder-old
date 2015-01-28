@@ -12,10 +12,6 @@
 
 #define USE_TASKBAR_API (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
 
-#if USE_TASKBAR_API
-#include <Shobjidl.h>
-#endif
-
 #define XP (_WIN32_WINNT < _WIN32_WINNT_VISTA)
 
 #define MB_TITLE L"Cmder Launcher"
@@ -83,15 +79,11 @@ optpair GetOption()
 	return pair;
 }
 
+void StartCmder(std::wstring path, bool is_single_mode)
+{
 #if USE_TASKBAR_API
-void GetAppId(wchar_t* appId, DWORD size)
-{
-	GetModuleFileName(NULL, appId, size);
-}
+	wchar_t appId[MAX_PATH] = { 0 };
 #endif
-
-void StartCmder(std::wstring path)
-{
 	wchar_t exeDir[MAX_PATH] = { 0 };
 	wchar_t icoPath[MAX_PATH] = { 0 };
 	wchar_t cfgPath[MAX_PATH] = { 0 };
@@ -99,13 +91,25 @@ void StartCmder(std::wstring path)
 	wchar_t args[MAX_PATH * 2 + 256] = { 0 };
 
 	GetModuleFileName(NULL, exeDir, sizeof(exeDir));
+
+#if USE_TASKBAR_API
+	wcscpy_s(appId, exeDir);
+#endif
+
 	PathRemoveFileSpec(exeDir);
 
 	PathCombine(icoPath, exeDir, L"icons\\cmder.ico");
 	PathCombine(cfgPath, exeDir, L"config\\ConEmu.xml");
 	PathCombine(conEmuPath, exeDir, L"vendor\\conemu-maximus5\\ConEmu.exe");
 
-	swprintf_s(args, L"/Icon \"%s\" /Title Cmder /LoadCfgFile \"%s\"", icoPath, cfgPath);
+	if (is_single_mode) 
+	{
+		swprintf_s(args, L"/single /Icon \"%s\" /Title Cmder /LoadCfgFile \"%s\"", icoPath, cfgPath);
+	}
+	else 
+	{
+		swprintf_s(args, L"/Icon \"%s\" /Title Cmder /LoadCfgFile \"%s\"", icoPath, cfgPath);
+	}
 
 	SetEnvironmentVariable(L"CMDER_ROOT", exeDir);
 	SetEnvironmentVariable(L"CMDER_START", path.c_str());
@@ -113,8 +117,6 @@ void StartCmder(std::wstring path)
 	STARTUPINFO si = { 0 };
 	si.cb = sizeof(STARTUPINFO);
 #if USE_TASKBAR_API
-	wchar_t appId[MAX_PATH] = { 0 };
-	GetAppId(appId, sizeof(appId));
 	si.lpTitle = appId;
 	si.dwFlags = STARTF_TITLEISAPPID;
 #endif
@@ -234,7 +236,11 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	if (streqi(opt.first.c_str(), L"/START"))
 	{
-		StartCmder(opt.second);
+		StartCmder(opt.second, false);
+	}
+	else if (streqi(opt.first.c_str(), L"/SINGLE"))
+	{
+		StartCmder(opt.second, true);
 	}
 	else if (streqi(opt.first.c_str(), L"/REGISTER"))
 	{
@@ -246,22 +252,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		UnregisterShellMenu(opt.second, SHELL_MENU_REGISTRY_PATH_BACKGROUND);
 		UnregisterShellMenu(opt.second, SHELL_MENU_REGISTRY_PATH_LISTITEM);
 	}
-#if USE_TASKBAR_API
-	else if (streqi(opt.first.c_str(), L"/PIN"))
-	{
-		wchar_t appId[MAX_PATH] = { 0 };
-		GetAppId(appId, sizeof(appId));
-		SetCurrentProcessExplicitAppUserModelID(appId);
-		MessageBox(NULL, L"Pin Cmder to the taskbar now.", MB_TITLE, MB_OK);
-	}
-#endif
 	else
 	{
-#if USE_TASKBAR_API
-		MessageBox(NULL, L"Unrecognized parameter.\n\nValid options:\n  /START <path>\n  /REGISTER [USER/ALL]\n  /UNREGISTER [USER/ALL]\n  /PIN", MB_TITLE, MB_OK);
-#else
-		MessageBox(NULL, L"Unrecognized parameter.\n\nValid options:\n  /START <path>\n  /REGISTER [USER/ALL]\n  /UNREGISTER [USER/ALL]\n", MB_TITLE, MB_OK);
-#endif
+		MessageBox(NULL, L"Unrecognized parameter.\n\nValid options:\n  /START <path>\n  /SINGLE <path>\n  /REGISTER [USER/ALL]\n  /UNREGISTER [USER/ALL]", MB_TITLE, MB_OK);
 		return 1;
 	}
 
