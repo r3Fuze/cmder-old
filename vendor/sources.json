@@ -17,6 +17,11 @@
     {
     	"name": "hub",
     	"version": "2.2.0-rc1",
-    	"url": "https://github.com/github/hub/releases/download/v2.2.0-rc1/hub_2.2.0-rc1_windows_amd64.gz.tar"
+        "url": "https://github.com/github/hub/releases/download/v2.2.0-rc1/hub_windows_amd64_v2.2.0-rc1.tar.gz"
+    },
+    {
+        "name": "gow",
+        "version": "0.8.0",
+        "url": "https://github.com/bmatzelle/gow/archive/v0.8.0.zip"
     }
 ]

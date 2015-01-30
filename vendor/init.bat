@@ -46,8 +46,8 @@
 :: Add the bin folder and everything inside the include file to PATH
 @set PATH=%CMDER_ROOT%\bin;%include_content%;%CMDER_ROOT%;%PATH%
 
-:: Add all the git stuff to PATH. This includes the hub utility
-@set PATH=%git_install_root%\bin;%git_install_root%\cmd;%git_install_root%\share\vim\vim74;%CMDER_ROOT%\vendor\hub;%PATH%
+:: Add git, hub and the gow utilities to PATH. gow goes after git so that it overwrites the common utilities
+@set PATH=%git_install_root%\bin;%git_install_root%\cmd;%git_install_root%\share\vim\vim74;%CMDER_ROOT%\vendor\gow\bin;%CMDER_ROOT%\vendor\hub;%PATH%
 
 :: Add aliases
 @doskey /macrofile="%CMDER_ROOT%\config\aliases"

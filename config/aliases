@@ -33,3 +33,8 @@ git=hub $*
 ;=     unalias [command]
 ;=     Removes [command] from aliases
 unalias=alias /d $1
+
+;= Small directory aliases
+..=cd ..
+...=cd ..\..
+....=cd ..\..\..
