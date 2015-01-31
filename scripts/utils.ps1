@@ -42,6 +42,7 @@ function Extract-Archive ($source, $target) {
     }
 
     # Do special things if the file is gzipped
+    # TODO: Better documentation
     if ($archiveType -eq "gzip") {
         # Filename is hub.tmp, extracting to filename hub
         Invoke-Expression "7z x -y $source > `$null"

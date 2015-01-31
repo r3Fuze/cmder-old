@@ -22,6 +22,12 @@ history=cat %CMDER_ROOT%\config\.history
 ;=     Opens [file/directory] in Sublime Text
 subl="%PROGRAMFILES%\Sublime Text 3\subl.exe" $*
 
+;= Short alias for atom
+a=atom $*
+
+;= Create a folder and cd into it immediately 
+mkcd=mkdir $1 && cd $1
+
 ;= Prints out the current date and time
 now=time /t $T date /t
 
