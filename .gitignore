@@ -2,8 +2,8 @@
 ## Those files should be taken from their repository
 
 vendor/*/*
-!vendor/*
-!vendor/psmodules/PsGet
+!vendor/psmodules/*
+!vendor/*.*
 
 config/.history
 Thumbs.db
